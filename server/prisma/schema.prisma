@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+enum LeadStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+  CLOSED
+}
+
+enum ActivityAction {
+  CREATED_LEAD
+  UPDATED_LEAD
+  DELETED_LEAD
+  LOGGED_INTERACTION
+}
+
+enum InteractionType {
+  CALL
+  VIDEO_CALL
+  WALK_IN
+  EMAIL
+  OTHER
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  lastName   String?
+  email      String   @unique
+  password   String
+  role       Role
+  isActive   Boolean
+  profilePic String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  //Relationships
+  leads           Lead[]
+  activities      ActivityLog[]
+  LeadUpdate      LeadUpdate[]
+  InteractionLogs InteractionLog[]
+  FollowUp        FollowUp[]
+}
+
+model Lead {
+  id         Int        @id @default(autoincrement())
+  firstName  String
+  lastName   String?
+  profilePic String?
+  email      String     @unique
+  phone      String
+  courseId   Int
+  assignedTo Int
+  status     LeadStatus
+  isActive   Boolean
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  //Relationships
+  course          Course           @relation(fields: [courseId], references: [id])
+  assignedUser    User             @relation(fields: [assignedTo], references: [id])
+  LeadUpdate      LeadUpdate[]
+  InteractionLogs InteractionLog[]
+  FollowUp        FollowUp[]
+  LeadDocument    LeadDocument[]
+}
+
+model LeadDocument {
+  id         Int      @id @default(autoincrement())
+  leadId     Int
+  fileName   String
+  fileUrl    String
+  uploadedAt DateTime @default(now())
+
+  // Relationships
+  lead Lead @relation(fields: [leadId], references: [id])
+}
+
+model LeadUpdate {
+  id        Int        @id @default(autoincrement())
+  leadId    Int
+  userId    Int
+  status    LeadStatus
+  comments  String?
+  createdAt DateTime   @default(now())
+
+  // Relationships
+  lead Lead @relation(fields: [leadId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Course {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  //Relationships
+  leads Lead[]
+}
+
+model ActivityLog {
+  id          Int            @id @default(autoincrement())
+  userId      Int
+  action      ActivityAction
+  description String
+  createdAt   DateTime       @default(now())
+
+  //Relationships
+  user User @relation(fields: [userId], references: [id])
+}
+
+model InteractionLog {
+  id              Int             @id @default(autoincrement())
+  leadId          Int
+  interactionById Int
+  interactionType InteractionType
+  interactionTime DateTime        @default(now())
+  notes           String?
+
+  // Relationships
+  lead          Lead @relation(fields: [leadId], references: [id])
+  interactionBy User @relation(fields: [interactionById], references: [id])
+}
+
+model FollowUp {
+  id           Int      @id @default(autoincrement())
+  leadId       Int
+  assignedToId Int
+  followUpDate DateTime
+  notes        String?
+  isCompleted  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationships
+  lead       Lead @relation(fields: [leadId], references: [id])
+  assignedTo User @relation(fields: [assignedToId], references: [id])
+}

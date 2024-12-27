@@ -22,6 +22,7 @@ const Login = () => {
       const response = await apiClient.login(data);
       setSuccess(response.message);
       console.log(success);
+      console.log(error);
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);

@@ -4,6 +4,7 @@ import { handleError } from "../utils/handleError.utils";
 import { hashPassword } from "../utils/password.utils";
 import { ZodError } from "zod";
 import { leadSchema, updateLeadSchema } from "../validations/lead.validation";
+import { LeadSource, LeadStatus } from "@prisma/client";
 
 class LeadController {
   // Get all the leads details
@@ -39,7 +40,7 @@ class LeadController {
     }
   }
 
-  //Get details of a specific user by id
+  //Get details of a specific lead by id
   static async getLeadById(req: Request, res: Response): Promise<void> {
     const leadId: number = parseInt(req.params.id);
     try {
@@ -92,6 +93,8 @@ class LeadController {
           createdBy: userId,
           status: "NEW",
           isActive: true,
+          source: payload.source as LeadSource,
+          priority: payload.priority || "MEDIUM",
         },
       });
 
@@ -131,6 +134,8 @@ class LeadController {
         },
         data: {
           ...payload,
+          source: payload.source as LeadSource,
+          status: payload.status as LeadStatus,
         },
       });
 
@@ -150,7 +155,7 @@ class LeadController {
     }
   }
 
-  // Deactivate an existing user
+  // Deactivate an existing lead
   static async deactivateLead(req: Request, res: Response): Promise<void> {
     const leadId: number = parseInt(req.params.id, 10);
     try {

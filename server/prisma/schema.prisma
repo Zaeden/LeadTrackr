@@ -12,11 +12,45 @@ enum Role {
   EMPLOYEE
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 enum LeadStatus {
   NEW
+  CONTACTED
+  QUALIFIED
   IN_PROGRESS
   COMPLETED
-  CLOSED
+  LOST
+}
+
+enum LeadPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum CourseLevel {
+  BACHELORS
+  DIPLOMA
+  MASTERS
+  DOCTORATE
+}
+
+enum LeadSource {
+  WEBSITE
+  REFERRAL
+  EVENT
+  ADVERTISEMENT
+  PARTNER
+  WALK_IN
+  GOOGLE
+  FACEBOOK
+  INSTAGRAM
+  YOUTUBE
+  OTHER
 }
 
 enum ActivityAction {
@@ -39,6 +73,7 @@ model User {
   firstName  String
   lastName   String?
   email      String   @unique
+  phone      String
   password   String
   role       Role
   isActive   Boolean
@@ -57,22 +92,33 @@ model User {
 }
 
 model Lead {
-  id         Int        @id @default(autoincrement())
-  firstName  String
-  lastName   String?
-  profilePic String?
-  email      String     @unique
-  phone      String
-  courseId   Int
-  assignedTo Int
-  createdBy  Int
-  status     LeadStatus
-  isActive   Boolean
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id            Int          @id @default(autoincrement())
+  firstName     String
+  lastName      String?
+  profilePic    String?
+  email         String?      @unique
+  phone         String       @unique
+  gender        Gender
+  dob           DateTime?
+  courseId      Int?
+  assignedTo    Int
+  createdBy     Int
+  status        LeadStatus
+  isActive      Boolean
+  source        LeadSource
+  fatherName    String?
+  fatherPhone   String?
+  streetAddress String?
+  city          String?
+  state         String?
+  postalCode    String?
+  country       String?
+  priority      LeadPriority
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   //Relationships
-  course          Course           @relation(fields: [courseId], references: [id])
+  course          Course?          @relation(fields: [courseId], references: [id])
   assignedUser    User             @relation(fields: [assignedTo], references: [id])
   createdByUser   User             @relation("LeadCreator", fields: [createdBy], references: [id])
   LeadUpdate      LeadUpdate[]
@@ -106,9 +152,11 @@ model LeadUpdate {
 }
 
 model Course {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  level     CourseLevel
+  isActive  Boolean
+  createdAt DateTime    @default(now())
 
   //Relationships
   leads Lead[]

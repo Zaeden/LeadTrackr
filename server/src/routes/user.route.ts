@@ -11,15 +11,10 @@ userRouter.get("/:id", authenticateToken, isAdmin, UserController.getUserById);
 
 userRouter.post("/", authenticateToken, isAdmin, UserController.createUser);
 
-userRouter.put(
-  "/users/:id",
-  authenticateToken,
-  isAdmin,
-  UserController.updateUser
-);
+userRouter.put("/:id", authenticateToken, isAdmin, UserController.updateUser);
 
 userRouter.patch(
-  "/users/:id/deactivate",
+  "/:id/deactivate",
   authenticateToken,
   isAdmin,
   UserController.deactivateUser

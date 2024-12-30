@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import prisma from "../db/db.config";
 import { comparePassword, hashPassword } from "../utils/password.utils";
 import { generateToken } from "../utils/token.utils";
+import { handleError } from "../utils/handleError.utils";
 
 class AuthController {
   static async register(req: Request, res: Response): Promise<any> {
@@ -18,7 +19,9 @@ class AuthController {
       });
 
       if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
+        return res
+          .status(400)
+          .json({ success: false, message: "User already exists" });
       }
 
       // Hash the Password.
@@ -39,7 +42,7 @@ class AuthController {
           .status(500)
           .json({ message: error.errors.map((err) => err.message) });
       } else {
-        return res.status(500).json({ message: error });
+        handleError(error, res);
       }
     }
   }
@@ -57,6 +60,10 @@ class AuthController {
       if (!user)
         return res.status(400).json({ message: "Invalid Credentials" });
 
+      if (!user.isActive) {
+        return res.status(403).json({ message: "You are unauthorized" });
+      }
+
       const isPasswordMatching = await comparePassword(
         payload.password,
         user.password
@@ -64,7 +71,9 @@ class AuthController {
 
       // check if password is matching with the password in the database.
       if (!isPasswordMatching)
-        return res.status(400).json({ message: "Invalid Credentials" });
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid Credentials" });
 
       // generate a token.
 
@@ -73,7 +82,7 @@ class AuthController {
       // send a cookie.
       res.cookie("auth_token", token, {
         httpOnly: true,
-        maxAge: 24 * 60 * 60,
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
       return res
@@ -85,7 +94,7 @@ class AuthController {
           .status(500)
           .json({ message: error.errors.map((err) => err.message) });
       } else {
-        return res.status(500).json({ message: error });
+        handleError(error, res);
       }
     }
   }
@@ -103,7 +112,7 @@ class AuthController {
       res.cookie("auth_token", "", {
         expires: new Date(0),
       });
-      res.send();
+      res.json({ message: "User Logged Out" });
     } catch (error) {
       return res.status(500).json({ message: error });
     }

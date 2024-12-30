@@ -8,9 +8,10 @@ export const registerSchema = z.object({
     .string()
     .min(1, { message: "Email is required" })
     .email("Invalid email address"),
+  phone: z.string().min(10).max(10),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters long" })
+    .min(8, { message: "Password must be at least 6 characters long" })
     .min(1, { message: "Password is required" })
     .max(20, { message: "Password must be atmost 20 characters long" }),
   role: z.enum([Role.ADMIN, Role.EMPLOYEE], {
@@ -25,7 +26,7 @@ export const loginSchema = z.object({
     .email("Invalid email address"),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters long" })
+    .min(8, { message: "Password must be at least 6 characters long" })
     .min(1, { message: "Password is required" })
     .max(20, { message: "Password must be atmost 20 characters long" }),
 });

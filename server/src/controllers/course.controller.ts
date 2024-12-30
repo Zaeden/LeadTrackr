@@ -1,14 +1,16 @@
 import { Request, Response } from "express";
 import prisma from "../db/db.config";
 import { handleError } from "../utils/handleError.utils";
-import { updateUserSchema, userSchema } from "../validations/user.validation";
-import { hashPassword } from "../utils/password.utils";
 import { ZodError } from "zod";
-import { Prisma, Role } from "@prisma/client";
+import { CourseLevel, Prisma } from "@prisma/client";
+import {
+  courseSchema,
+  updateCourseSchema,
+} from "../validations/course.validation";
 
-class UserController {
-  // Get all the users details
-  static async getAllUsers(req: Request, res: Response): Promise<any> {
+class CourseController {
+  // Get all the course details
+  static async getAllCourses(req: Request, res: Response): Promise<any> {
     const { page = 1, limit = 10, search = "" } = req.query;
     const pageNumber = parseInt(page as string, 10);
     const pageSize = parseInt(limit as string, 10);
@@ -18,44 +20,31 @@ class UserController {
         ? {
             OR: [
               {
-                firstName: {
+                name: {
                   contains: search as string,
                   mode: Prisma.QueryMode.insensitive,
                 },
               },
-              {
-                email: {
-                  contains: search as string,
-                  mode: Prisma.QueryMode.insensitive,
-                },
-              },
-              {
-                phone: {
-                  contains: search as string,
-                  mode: Prisma.QueryMode.insensitive,
-                },
-              },
-
-              { role: { equals: search as Role } },
+              { role: { equals: search as CourseLevel } },
             ],
           }
         : {};
 
-      const totalUsers = await prisma.user.count();
-      const users = await prisma.user.findMany({
+      const totalCourses = await prisma.course.count();
+      const courses = await prisma.course.findMany({
         where: whereClause,
         skip: (pageNumber - 1) * pageSize,
         take: pageSize,
       });
-      if (users.length === 0) {
-        return res.status(404).json({ message: "No users found." });
+      if (courses.length === 0) {
+        return res.status(404).json({ message: "No Courses found." });
       }
       return res.status(200).json({
         success: true,
-        message: "Users fetched successfully",
-        users,
-        totalUsers,
-        totalPages: Math.ceil(totalUsers / pageSize),
+        message: "Courses fetched successfully",
+        courses,
+        totalCourses,
+        totalPages: Math.ceil(totalCourses / pageSize),
         currentPage: pageNumber,
       });
     } catch (error) {
@@ -63,31 +52,31 @@ class UserController {
     }
   }
 
-  //Get details of a specific user by id
-  static async getUserById(req: Request, res: Response): Promise<void> {
+  //Get details of a specific course by id
+  static async getCourseById(req: Request, res: Response): Promise<void> {
     const id: number = parseInt(req.params.id);
     try {
-      const user = await prisma.user.findUnique({
+      const course = await prisma.course.findUnique({
         where: {
           id,
         },
       });
-      if (!user) {
-        res.status(404).json({ success: false, message: "User not found" });
+      if (!course) {
+        res.status(404).json({ success: false, message: "Course not found" });
         return;
       }
       res.status(200).json({
         success: true,
-        message: "User details fetched successfully",
-        user,
+        message: "Course details fetched successfully",
+        course,
       });
     } catch (error) {
       handleError(error, res);
     }
   }
 
-  // Create a new user
-  static async createUser(req: Request, res: Response): Promise<void> {
+  // Create a new course
+  static async createCourse(req: Request, res: Response): Promise<void> {
     const { body } = req;
 
     try {
@@ -97,32 +86,27 @@ class UserController {
         })
       );
 
-      const payload = userSchema.parse(trimmedBody);
+      const payload = courseSchema.parse(trimmedBody);
 
-      const existingUser = await prisma.user.findUnique({
-        where: { email: payload.email },
+      const existingCourse = await prisma.course.findUnique({
+        where: { name: payload.name },
       });
 
-      if (existingUser) {
-        res.status(400).json({ message: "User already exists" });
+      if (existingCourse) {
+        res.status(400).json({ message: "Course already exists" });
         return;
       }
 
-      // Hash the password
-
-      const hashedPassword = await hashPassword(payload.password);
-
-      const newUser = await prisma.user.create({
+      const newCourse = await prisma.course.create({
         data: {
           ...payload,
-          password: hashedPassword,
           isActive: true,
         },
       });
 
       res
         .status(201)
-        .json({ success: true, message: "User created successfully" });
+        .json({ success: true, message: "Course created successfully" });
     } catch (error) {
       if (error instanceof ZodError) {
         res
@@ -134,16 +118,16 @@ class UserController {
     }
   }
 
-  // Update an existing user
-  static async updateUser(req: Request, res: Response): Promise<void> {
+  // Update an existing course
+  static async updateCourse(req: Request, res: Response): Promise<void> {
     const body = req.body;
     const id: number = parseInt(req.params.id, 10);
     try {
-      const existingUser = await prisma.user.findFirst({
+      const existingCourse = await prisma.course.findFirst({
         where: { id },
       });
 
-      if (!existingUser) {
+      if (!existingCourse) {
         res.status(404).json({
           success: false,
           message: "User not found.",
@@ -157,21 +141,20 @@ class UserController {
         })
       );
 
-      const payload = updateUserSchema.parse(trimmedBody);
+      const payload = updateCourseSchema.parse(trimmedBody);
 
-      const updatedUser = await prisma.user.update({
+      const updatedCourse = await prisma.course.update({
         where: {
           id,
         },
         data: {
           ...payload,
-          password: existingUser.password,
         },
       });
 
       res.status(200).json({
         success: true,
-        message: "User updated successfully",
+        message: "Course updated successfully",
       });
     } catch (error) {
       if (error instanceof ZodError) {
@@ -185,23 +168,23 @@ class UserController {
     }
   }
 
-  // Deactivate an existing user
-  static async deactivateUser(req: Request, res: Response): Promise<void> {
+  // Deactivate an existing course
+  static async deactivateCourse(req: Request, res: Response): Promise<void> {
     const id: number = parseInt(req.params.id, 10);
     try {
-      const existingUser = await prisma.user.findUnique({
+      const existingCourse = await prisma.course.findUnique({
         where: { id },
       });
 
-      if (!existingUser) {
+      if (!existingCourse) {
         res.status(404).json({
           success: false,
-          message: "User not found.",
+          message: "Course not found.",
         });
         return;
       }
 
-      const updatedUser = await prisma.user.update({
+      const updatedCourse = await prisma.course.update({
         where: {
           id,
         },
@@ -211,7 +194,7 @@ class UserController {
       });
       res.status(200).json({
         success: true,
-        message: "User successfully deactivated",
+        message: "Course successfully deactivated",
       });
     } catch (error) {
       handleError(error, res);
@@ -219,4 +202,4 @@ class UserController {
   }
 }
 
-export default UserController;
+export default CourseController;

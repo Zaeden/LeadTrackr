@@ -1,6 +1,7 @@
 import { AddCourseFormType } from "./components/forms/AddCourse";
 import { AddUserFormType } from "./components/forms/AddUser";
 import { LoginFormData } from "./pages/auth/Login";
+import { LeadType } from "./types/LeadType";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
@@ -162,6 +163,25 @@ export const getAllCourses = async () => {
   return responseBody;
 };
 
+//Fetches all courses data by level
+export const getAllCoursesByLevel = async (level: string) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/courses/levels/?level=${level}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
 //Fetches a specific user data.
 export const getCourse = async (courseId: number) => {
   const response = await fetch(`${API_BASE_URL}/api/courses/${courseId}`, {
@@ -230,6 +250,42 @@ export const deleteCourse = async (courseId: number | null) => {
       credentials: "include",
     }
   );
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+//Fetches all leads data.
+export const getAllLeads = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/leads/`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+// Adds new lead data to the database.
+export const createLead = async (formData: LeadType) => {
+  const response = await fetch(`${API_BASE_URL}/api/leads/`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
 
   const responseBody = await response.json();
 

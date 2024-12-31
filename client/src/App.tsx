@@ -6,6 +6,7 @@ import useAuth from "./hooks/useAuth";
 import { Toaster } from "react-hot-toast";
 import UserManagement from "./pages/user/UserManagement";
 import CourseManagement from "./pages/course/CourseManagement";
+import LeadManagement from "./pages/lead/LeadManagement";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -36,7 +37,7 @@ const App = () => {
               path="/leads"
               element={
                 <Layout>
-                  <Dashboard />
+                  <LeadManagement />
                 </Layout>
               }
             />

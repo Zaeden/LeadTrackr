@@ -13,6 +13,12 @@ courseRouter.get(
 );
 
 courseRouter.get(
+  "/levels",
+  authenticateToken,
+  CourseController.getAllCoursesByLevel
+);
+
+courseRouter.get(
   "/:id",
   authenticateToken,
   isAdmin,

@@ -6,7 +6,7 @@ const leadSourceEnum = Object.values(LeadSource) as [string, ...string[]];
 export const leadSchema = z.object({
   firstName: z.string().min(1, { message: "First Name is required" }),
   lastName: z.string().optional(),
-  email: z.string().min(1, { message: "Email is required" }).email().optional(),
+  email: z.string().email().optional(),
   phone: z.string().min(10).max(10),
   gender: z.enum([Gender.MALE, Gender.FEMALE]),
   courseId: z.number().optional(),

@@ -70,7 +70,10 @@ class LeadController {
     const { id: userId } = req.user;
 
     try {
-      const payload = leadSchema.parse(body);
+      const payload = leadSchema.parse({
+        ...body,
+        courseId: parseInt(body.courseId, 10),
+      });
 
       const existingLead = await prisma.lead.findFirst({
         where: {

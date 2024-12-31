@@ -75,6 +75,38 @@ class CourseController {
     }
   }
 
+  //Get details of all courses by level
+  static async getAllCoursesByLevel(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const { level } = req.query;
+    if (!level) {
+      res.status(400).json({ message: "Level parameter is required" });
+      return;
+    }
+    try {
+      const courses = await prisma.course.findMany({
+        where: {
+          level: level as CourseLevel,
+        },
+      });
+
+      if (courses.length === 0) {
+        res.status(404).json({ message: "No courses found for this level" });
+        return;
+      }
+      res.status(200).json({
+        success: true,
+        message: "Courses fetched successfully",
+        courses,
+      });
+      return;
+    } catch (error) {
+      handleError(error, res);
+    }
+  }
+
   // Create a new course
   static async createCourse(req: Request, res: Response): Promise<void> {
     const { body } = req;

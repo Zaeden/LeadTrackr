@@ -22,7 +22,7 @@ const LeadStatusBadge = ({
 
   return (
     <span
-      className={`px-2 border-2 rounded-full text-xs font-semibold ${statusStyles[status]}`}
+      className={`px-2 border rounded-full text-xs font-semibold ${statusStyles[status]}`}
     >
       {text[0] + text.substring(1).toLowerCase()}
     </span>

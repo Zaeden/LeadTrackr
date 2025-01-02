@@ -4,6 +4,8 @@ import * as apiClient from "../../api-client";
 import LeadList from "./LeadList";
 import { LeadType } from "../../types/LeadType";
 import AddLead from "../../components/forms/AddLead";
+import EditLead from "../../components/forms/EditLead";
+import DeleteLeadDailog from "../../components/ui/DeleteLeadDailog";
 
 const LeadManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -51,7 +53,7 @@ const LeadManagement = () => {
         </button>
       </div>
 
-      {/* User List */}
+      {/* Lead List */}
       <LeadList
         loading={loading}
         data={data}
@@ -65,7 +67,7 @@ const LeadManagement = () => {
         }}
       />
 
-      {/* Add User Form Modal */}
+      {/* Add Lead Form Modal */}
       {isModalOpen && (
         <AddLead
           onClose={() => setIsModalOpen(false)}
@@ -76,28 +78,29 @@ const LeadManagement = () => {
         />
       )}
 
-      {/* Edit User Form Modal */}
-      {/* {isEditModalOpen && (
-        <EditUser
-          leadId={selectedleadId}
+      {/* Edit Lead Form Modal */}
+      {isEditModalOpen && (
+        <EditLead
+          leadId={selectedLeadId}
           onClose={() => setIsEditModalOpen(false)}
-          onUpdateUser={() => {
+          onUpdateLead={() => {
             fetchData();
             setIsEditModalOpen(false);
           }}
         />
-      )} */}
+      )}
+
       {/* Delete User Form Modal */}
-      {/* {isDeleteModalOpen && (
-        <DeleteUserDailog
-          leadId={selectedleadId}
+      {isDeleteModalOpen && (
+        <DeleteLeadDailog
+          leadId={selectedLeadId}
           onClose={() => setIsDeleteModalOpen(false)}
-          onDeleteUser={() => {
+          onDeleteLead={() => {
             fetchData();
             setIsDeleteModalOpen(false);
           }}
         />
-      )} */}
+      )}
     </div>
   );
 };

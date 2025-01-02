@@ -7,7 +7,7 @@ export type LeadType = {
   phone: string;
   gender: "MALE" | "FEMALE";
   dob: string;
-  courseId: number;
+  courseId: number | null;
   assignedTo: number;
   createdBy: number;
   status:

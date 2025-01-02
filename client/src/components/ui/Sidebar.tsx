@@ -12,18 +12,18 @@ import Logout from "./Logout";
 const Sidebar = () => {
   const location = useLocation();
   return (
-    <nav className="border-r shadow w-64 bg-purple-900 flex flex-col">
-      <h2 className="rounded-t-none bg-purple-950 rounded-2xl text-center text-xl text-white font-bold py-4 ">
+    <nav className="border-r shadow-md w-64 bg-white flex flex-col">
+      <h2 className="rounded text-center text-3xl text-purple-900 font-bold py-4 shadow-md">
         LeadTrackr
       </h2>
       <ul className="flex-1 mt-4 space-y-2 px-4">
         <li>
           <Link
             to="/dashboard"
-            className={`flex items-center gap-2 py-2 px-3 rounded ${
+            className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
               location.pathname === "/dashboard"
-                ? "bg-white text-purple-600"
-                : "text-white hover:bg-purple-700"
+                ? "bg-purple-300 "
+                : "hover:bg-purple-300"
             }`}
           >
             <MdOutlineSpaceDashboard className="text-2xl" />
@@ -33,10 +33,10 @@ const Sidebar = () => {
         <li>
           <Link
             to="/leads"
-            className={`flex items-center gap-2 py-2 px-3 rounded ${
+            className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
               location.pathname === "/leads"
-                ? "bg-white text-purple-600"
-                : "text-white hover:bg-purple-700"
+                ? "bg-purple-300 "
+                : " hover:bg-purple-300"
             }`}
           >
             <MdOutlineLeaderboard className="text-2xl" />
@@ -46,10 +46,10 @@ const Sidebar = () => {
         <li>
           <Link
             to="/users"
-            className={`flex items-center gap-2 py-2 px-3 rounded ${
+            className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
               location.pathname === "/users"
-                ? "bg-white text-purple-600"
-                : "text-white hover:bg-purple-700"
+                ? "bg-purple-300 "
+                : " hover:bg-purple-300"
             }`}
           >
             <LuUserPen className="text-2xl" />
@@ -60,10 +60,10 @@ const Sidebar = () => {
         <li>
           <Link
             to="/courses"
-            className={`flex items-center gap-2 py-2 px-3 rounded ${
+            className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
               location.pathname === "/courses"
-                ? "bg-white text-purple-600"
-                : "text-white hover:bg-purple-700"
+                ? "bg-purple-300 "
+                : "hover:bg-purple-300"
             }`}
           >
             <MdOutlineSubject className="text-2xl" />
@@ -73,10 +73,10 @@ const Sidebar = () => {
         <li>
           <Link
             to="/follow-ups"
-            className={`flex items-center gap-2 py-2 px-3  rounded ${
+            className={`flex items-center gap-2 py-2 px-3  rounded text-purple-900 ${
               location.pathname === "/follow-ups"
-                ? "bg-white text-purple-600"
-                : "text-white hover:bg-purple-700"
+                ? "bg-purple-300"
+                : "hover:bg-purple-300"
             }`}
           >
             <RiChatFollowUpLine className="text-2xl" />
@@ -86,10 +86,10 @@ const Sidebar = () => {
         <li>
           <Link
             to="/settings"
-            className={`flex items-center gap-2 py-2 px-3 rounded ${
+            className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
               location.pathname === "/settings"
-                ? "bg-white text-purple-600"
-                : "text-white hover:bg-purple-700"
+                ? "bg-purple-300"
+                : "hover:bg-purple-300"
             }`}
           >
             <MdOutlineSettings className="text-2xl" />
@@ -97,7 +97,7 @@ const Sidebar = () => {
           </Link>
         </li>
       </ul>
-      <div className="p-4 border-t border-gray-700">
+      <div className="p-4">
         <Logout />
       </div>
     </nav>

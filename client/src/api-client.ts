@@ -276,10 +276,46 @@ export const getAllLeads = async () => {
   return responseBody;
 };
 
+//Fetches a specific lead data.
+export const getLead = async (leadId: number) => {
+  const response = await fetch(`${API_BASE_URL}/api/leads/${leadId}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
 // Adds new lead data to the database.
 export const createLead = async (formData: LeadType) => {
   const response = await fetch(`${API_BASE_URL}/api/leads/`, {
     method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+// Updates exising lead data in the database.
+export const updateLead = async (leadId: number | null, formData: LeadType) => {
+  const response = await fetch(`${API_BASE_URL}/api/leads/${leadId}`, {
+    method: "PUT",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",

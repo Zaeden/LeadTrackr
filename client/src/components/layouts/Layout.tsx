@@ -8,7 +8,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <Sidebar />
 
       {/* Right Content Area */}
-      <main className="flex-1 h-full overflow-y-auto">{children}</main>
+      <main className="flex-1 h-full overflow-y-auto bg-gray-100">
+        {children}
+      </main>
     </div>
   );
 };

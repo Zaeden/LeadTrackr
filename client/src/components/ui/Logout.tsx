@@ -30,7 +30,7 @@ const Logout = () => {
   return (
     <button
       onClick={handleLogout}
-      className="h-10 w-full py-2 px-4 text-sm font-semibold text-gray-100 bg-red-600 rounded hover:bg-red-700"
+      className="h-10 w-full py-2 px-4 text-sm font-semibold text-pink-900 bg-pink-300 rounded hover:bg-pink-400"
     >
       {loading ? <FaSpinner className="animate-spin mx-auto" /> : "Logout"}
     </button>

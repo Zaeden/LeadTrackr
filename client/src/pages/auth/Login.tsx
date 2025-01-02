@@ -67,7 +67,7 @@ const Login = () => {
               type="email"
               id="email"
               {...register("email", { required: "This field is required" })}
-              className="border-0 rounded-md w-full px-2 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="border-0 rounded-md w-full px-2 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
             />
 
             <div className="h-7">
@@ -94,7 +94,7 @@ const Login = () => {
                   message: "Password must be at least 8 characters",
                 },
               })}
-              className="border-0 rounded-md w-full px-2 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="border-0 rounded-md w-full px-2 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inpurpledigo-600"
             />
 
             <div className="h-7">
@@ -108,7 +108,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="h-10 block rounded-md w-full mt-4 px-3 py-1.5 bg-indigo-600 text-white font-semibold text-sm/6 shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="h-10 block rounded-md w-full mt-4 px-3 py-1.5 bg-purple-600 text-white font-semibold text-sm/6 shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
             >
               {loading ? (
                 <FaSpinner className="animate-spin mx-auto" />

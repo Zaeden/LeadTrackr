@@ -6,7 +6,7 @@ const leadRouter = express.Router();
 
 leadRouter.get("/", authenticateToken, LeadController.getAllLeads);
 
-leadRouter.get("/:id", authenticateToken, LeadController.getAllLeads);
+leadRouter.get("/:id", authenticateToken, LeadController.getLeadById);
 
 leadRouter.post("/", authenticateToken, LeadController.createLead);
 

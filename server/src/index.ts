@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -27,6 +27,10 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/leads", leadRouter);
 app.use("/api/courses", courseRouter);
+
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);

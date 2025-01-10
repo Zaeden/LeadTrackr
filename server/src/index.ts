@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.route";
 import userRouter from "./routes/user.route";
 import leadRouter from "./routes/lead.route";
 import courseRouter from "./routes/course.route";
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -19,6 +20,8 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(express.static(path.join(__dirname, "../../client/dist")));
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);

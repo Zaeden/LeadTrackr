@@ -85,6 +85,7 @@ class AuthController {
         secure: true,
         sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
+        domain: process.env.BACKEND_URL as string,
       });
 
       return res

@@ -3,7 +3,7 @@ import * as apiClient from "../../api-client";
 import { useState } from "react";
 import Toast from "../../components/ui/Toast";
 import { useNavigate } from "react-router-dom";
-import { FaSpinner } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 
 export type LoginFormData = {
@@ -15,6 +15,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { setAuthenticated } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const {
     register,
@@ -84,19 +85,29 @@ const Login = () => {
             >
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              {...register("password", {
-                required: "This field is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
-              })}
-              className="border-0 rounded-md w-full px-2 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
-            />
-
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                {...register("password", {
+                  required: "This field is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters",
+                  },
+                })}
+                className="border-0 rounded-md w-full px-2 py-1.5 pr-10 shadow-sm ring-1 ring-inset ring-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+                className="absolute inset-y-0 right-2 flex items-center text-purple-500"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
             <div className="h-7">
               {errors.password && (
                 <span className="text-sm text-red-500">

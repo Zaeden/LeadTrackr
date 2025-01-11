@@ -14,17 +14,18 @@ const App = () => {
     <>
       <Routes>
         <Route path="/sign-in" element={<Login />} />
-        <Route
-          path="/dashboard"
-          element={
-            <Layout>
-              <Dashboard />
-            </Layout>
-          }
-        />
 
         {isAuthenticated && (
           <>
+            <Route
+              path="/dashboard"
+              element={
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              }
+            />
+
             <Route
               path="/users"
               element={

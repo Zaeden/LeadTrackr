@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import UserManagement from "./pages/user/UserManagement";
 import CourseManagement from "./pages/course/CourseManagement";
 import LeadManagement from "./pages/lead/LeadManagement";
+import LeadProfile from "./pages/lead/LeadProfile";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -39,6 +40,14 @@ const App = () => {
               element={
                 <Layout>
                   <LeadManagement />
+                </Layout>
+              }
+            />
+            <Route
+              path="/leads/:leadId"
+              element={
+                <Layout>
+                  <LeadProfile />
                 </Layout>
               }
             />

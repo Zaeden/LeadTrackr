@@ -4,6 +4,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { LeadType } from "../../types/LeadType";
 import LeadStatusBadge from "../../components/ui/LeadStatusBadge";
 import { sourceOptions } from "../../data/dropDownData";
+import { Link } from "react-router-dom";
 
 const LeadList = ({
   data,
@@ -48,7 +49,10 @@ const LeadList = ({
                 className="hover:bg-gray-50 font-medium transition duration-300"
               >
                 <td className="px-4 py-2 border-b border-gray-300">
-                  {lead.firstName + (lead.lastName ? ` ${lead.lastName}` : "")}
+                  <Link to={`/leads/${lead.id}`}>
+                    {lead.firstName +
+                      (lead.lastName ? ` ${lead.lastName}` : "")}
+                  </Link>
                 </td>
                 <td className="px-4 py-2 border-b text-gray-500 border-gray-300">
                   {lead.email}

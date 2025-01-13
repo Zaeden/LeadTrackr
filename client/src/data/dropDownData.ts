@@ -67,3 +67,11 @@ export const indianStates = [
   { value: "UT", label: "Uttarakhand" },
   { value: "WB", label: "West Bengal" },
 ];
+
+export const interactionTypes = [
+  { value: "CALL", label: "Call" },
+  { value: "VIDEO_CALL", label: "Vedio Call" },
+  { value: "WALK_IN", label: "Walk-in" },
+  { value: "EMAIL", label: "Email" },
+  { value: "OTHER", label: "Other" },
+];

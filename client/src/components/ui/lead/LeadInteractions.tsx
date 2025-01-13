@@ -1,18 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddInteractionModal from "./AddInteractionModal";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import { InteractionTypes } from "../../../types/InteractionTypes";
+import * as apiClient from "../../../api-client";
 
-const LeadInteractions = () => {
-  const [showModal, setShowModal] = useState(false);
+const LeadInteractions = ({ leadId }: { leadId: string | undefined }) => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const interactions = [
-    { date: "2025-01-01", note: "Initial contact made via phone." },
-    { date: "2025-01-02", note: "Follow-up email sent." },
-    { date: "2025-01-03", note: "Discussed pricing over a call." },
-  ];
+  const [interactions, setInteractions] = useState<InteractionTypes[]>([]);
+
+  const fetchInteractions = async () => {
+    setLoading(true);
+    try {
+      if (leadId) {
+        const response = await apiClient.getInteractions(parseInt(leadId, 10));
+        console.log(response);
+        setInteractions(response.interactions);
+      }
+    } catch (error) {
+      console.error("Failed to fetch interactions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInteractions();
+  }, [leadId]);
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-6 bg-white rounded-lg shadow-md overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-800">Interactions</h2>
         <button
@@ -25,17 +43,47 @@ const LeadInteractions = () => {
       </div>
 
       {/* Interaction Timeline */}
-      <ul className="space-y-4">
-        {interactions.map((interaction, index) => (
-          <li key={index} className="p-4 bg-gray-100 rounded-md">
-            <p className="text-sm text-gray-500">{interaction.date}</p>
-            <p className="text-gray-700">{interaction.note}</p>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <p className="text-gray-500">Loading interactions...</p>
+      ) : interactions.length === 0 ? (
+        <p className="text-gray-500">No interactions found.</p>
+      ) : (
+        <div className="space-y-4">
+          {interactions.map((interaction) => (
+            <div
+              key={interaction.id}
+              className="p-4 border rounded-md shadow-sm bg-gray-50"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-semibold text-purple-600">
+                  {interaction.interactionType}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {new Date(interaction.interactionTime).toLocaleString()}
+                </span>
+              </div>
+              <p className="text-gray-700 text-sm">{interaction.notes}</p>
+              <p className="text-xs text-gray-500 mt-2">
+                Logged by:{" "}
+                {interaction.interactionBy.firstName +
+                  interaction.interactionBy.lastName}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Add Interaction Modal */}
-      {showModal && <AddInteractionModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <AddInteractionModal
+          leadId={leadId}
+          onClose={() => setShowModal(false)}
+          onAdd={() => {
+            fetchInteractions();
+            setShowModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };

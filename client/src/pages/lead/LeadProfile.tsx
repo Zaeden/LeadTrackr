@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { LeadType } from "../../types/LeadType";
 
 const LeadProfile = () => {
-  const { leadId } = useParams<{ leadId: string }>();
+  const { leadId } = useParams<{ leadId: string | undefined }>();
   const [leadData, setLeadData] = useState<LeadType>({
     id: 0,
     firstName: "",
@@ -61,7 +61,7 @@ const LeadProfile = () => {
 
       {/* Second Column: Lead Interactions */}
       <div className="w-full lg:w-2/3">
-        <LeadInteractions />
+        <LeadInteractions leadId={leadId} />
       </div>
     </div>
   );

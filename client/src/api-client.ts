@@ -1,6 +1,7 @@
 import { AddCourseFormType } from "./components/forms/AddCourse";
 import { AddUserFormType } from "./components/forms/AddUser";
 import { LoginFormData } from "./pages/auth/Login";
+import { InteractionTypes } from "./types/InteractionTypes";
 import { LeadType } from "./types/LeadType";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
@@ -322,6 +323,51 @@ export const updateLead = async (leadId: number | null, formData: LeadType) => {
     },
     body: JSON.stringify(formData),
   });
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+// Adds new lead interaction data to the database.
+export const createInteraction = async (
+  leadId: number,
+  formData: InteractionTypes
+) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/leads/${leadId}/interactions`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+//Fetches interactions of a lead.
+export const getInteractions = async (leadId: number) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/leads/${leadId}/interactions`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
 
   const responseBody = await response.json();
 

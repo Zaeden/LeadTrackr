@@ -15,12 +15,16 @@ import {
   MdLocationCity,
 } from "react-icons/md";
 import { TbMapPinCode } from "react-icons/tb";
+import { FiUpload } from "react-icons/fi";
+import UploadProfilePhoto from "./UploadProfilePhoto";
 
 type LeadProps = {
   lead: LeadType;
 };
 
 const LeadDetails: React.FC<LeadProps> = ({ lead }) => {
+  const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
+
   const [course, setCourse] = useState<{ name: string; level: string }>({
     name: "",
     level: "",
@@ -95,9 +99,27 @@ const LeadDetails: React.FC<LeadProps> = ({ lead }) => {
           </div>
         )}
 
+        <button
+          className="flex items-center gap-1 mt-2 mb-4 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-sm font-semibold text-white rounded-md"
+          onClick={() => setShowUploadModal(true)}
+        >
+          <FiUpload className="text-lg" />
+          Upload Photo
+        </button>
+
         {/* Lead Status */}
         <LeadStatusBadge text={lead.status} status={lead.status} />
       </div>
+
+      {/* Modal for Uploading Photo */}
+      {showUploadModal && (
+        <UploadProfilePhoto
+          leadId={lead.id}
+          profilePic={lead.profilePic}
+          onClose={() => setShowUploadModal(false)}
+          onSuccess={() => {}}
+        />
+      )}
 
       {/* Lead Details */}
       <div className="mt-6">

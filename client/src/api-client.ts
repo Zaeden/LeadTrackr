@@ -333,6 +333,29 @@ export const updateLead = async (leadId: number | null, formData: LeadType) => {
   return responseBody;
 };
 
+// Profile Image upload for an existing lead.
+export const profileImageUpload = async (
+  leadId: number,
+  formData: FormData
+) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/leads/${leadId}/upload-profile-image`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      body: formData,
+    }
+  );
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
 // Adds new lead interaction data to the database.
 export const createInteraction = async (
   leadId: number,

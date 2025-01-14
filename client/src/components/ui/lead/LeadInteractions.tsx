@@ -35,9 +35,9 @@ const LeadInteractions = ({ leadId }: { leadId: string | undefined }) => {
         <h2 className="text-lg font-semibold text-gray-800">Interactions</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="flex gap-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+          className="flex items-center gap-1 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-md hover:bg-purple-700"
         >
-          <IoMdAddCircleOutline className="text-2xl text-white" /> Add
+          <IoMdAddCircleOutline className="text-xl text-white" /> Add
           Interaction
         </button>
       </div>

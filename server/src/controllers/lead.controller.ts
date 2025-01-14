@@ -5,6 +5,7 @@ import { hashPassword } from "../utils/password.utils";
 import { ZodError } from "zod";
 import { leadSchema, updateLeadSchema } from "../validations/lead.validation";
 import { LeadSource, LeadStatus } from "@prisma/client";
+import cloudinary from "cloudinary";
 
 class LeadController {
   // Get all the leads details
@@ -185,6 +186,56 @@ class LeadController {
       res.status(200).json({
         success: true,
         message: "Lead successfully deactivated",
+      });
+    } catch (error) {
+      handleError(error, res);
+    }
+  }
+
+  // Upload profile image to a lead
+  static async uploadProfile(req: Request, res: Response): Promise<void> {
+    const leadId: number = parseInt(req.params.id, 10);
+    const imageFile = req.file as Express.Multer.File;
+
+    if (!imageFile) {
+      res.status(400).json({
+        success: false,
+        message: "No image file provided.",
+      });
+      return;
+    }
+
+    try {
+      const existingLead = await prisma.lead.findUnique({
+        where: { id: leadId },
+      });
+
+      if (!existingLead) {
+        res.status(404).json({
+          success: false,
+          message: "Lead not found.",
+        });
+        return;
+      }
+
+      const b64 = Buffer.from(imageFile.buffer).toString("base64");
+      let dataURI = "data:" + imageFile.mimetype + ";base64," + b64;
+
+      const cldResponse = await cloudinary.v2.uploader.upload(dataURI, {
+        folder: "lead-profile-photos",
+      });
+
+      const updateLeadProfilePic = await prisma.lead.update({
+        where: {
+          id: leadId,
+        },
+        data: {
+          profilePic: cldResponse.url,
+        },
+      });
+      res.status(200).json({
+        success: true,
+        message: "Image upload successfull",
       });
     } catch (error) {
       handleError(error, res);

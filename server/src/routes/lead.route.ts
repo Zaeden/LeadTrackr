@@ -1,9 +1,12 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import { authenticateToken } from "../middlewares/auth";
 import LeadController from "../controllers/lead.controller";
 import InteractionController from "../controllers/interaction.controller";
+import { upload } from "../config/multerConfig";
 
 const leadRouter = express.Router();
+
+//Lead related APIs.
 
 leadRouter.get("/", authenticateToken, LeadController.getAllLeads);
 
@@ -17,6 +20,14 @@ leadRouter.patch(
   "/:id/deactivate",
   authenticateToken,
   LeadController.deactivateLead
+);
+
+leadRouter.patch(
+  "/:id/upload-profile-image",
+  authenticateToken,
+
+  upload.single("profilePic"),
+  LeadController.uploadProfile
 );
 
 //Interaction related APIs

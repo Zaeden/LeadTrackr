@@ -28,18 +28,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(express.static(path.join(__dirname, "../../client/dist")));
+
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/leads", leadRouter);
 app.use("/api/courses", courseRouter);
 
-if ((process.env.NODE_ENV as string) === "production") {
-  app.use(express.static(path.join(__dirname, "../../client/dist")));
-
-  app.get("*", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
-  });
-}
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);

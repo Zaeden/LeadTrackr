@@ -2,6 +2,7 @@ import express from "express";
 import { authenticateToken } from "../middlewares/auth";
 import { isAdmin } from "../middlewares/role.middleware";
 import UserController from "../controllers/user.controller";
+import FollowUpsController from "../controllers/followUps.controller";
 
 const userRouter = express.Router();
 
@@ -18,6 +19,14 @@ userRouter.patch(
   authenticateToken,
   isAdmin,
   UserController.deactivateUser
+);
+
+// Follow Ups related routes.
+
+userRouter.get(
+  "/:id/follow-ups",
+  authenticateToken,
+  FollowUpsController.getUserFollowUps
 );
 
 export default userRouter;

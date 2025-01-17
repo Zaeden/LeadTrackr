@@ -1,8 +1,9 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import { authenticateToken } from "../middlewares/auth";
 import LeadController from "../controllers/lead.controller";
 import InteractionController from "../controllers/interaction.controller";
 import { upload } from "../config/multerConfig";
+import FollowUpsController from "../controllers/followUps.controller";
 
 const leadRouter = express.Router();
 
@@ -42,6 +43,20 @@ leadRouter.post(
   "/:id/interactions",
   authenticateToken,
   InteractionController.createLeadInteraction
+);
+
+// Follow-up related APIs.
+
+leadRouter.post(
+  "/:id/follow-ups",
+  authenticateToken,
+  FollowUpsController.createLeadFollowUp
+);
+
+leadRouter.get(
+  "/:id/follow-ups",
+  authenticateToken,
+  FollowUpsController.getLeadFollowUps
 );
 
 export default leadRouter;

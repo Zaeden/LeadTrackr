@@ -1,10 +1,20 @@
-import { formatDate } from "../../utils/ConvertDate";
-import { FiEdit } from "react-icons/fi";
-import { MdDeleteForever } from "react-icons/md";
-import { LeadType } from "../../types/LeadType";
-import LeadStatusBadge from "../../components/ui/LeadStatusBadge";
-import { sourceOptions } from "../../data/dropDownData";
 import { Link } from "react-router-dom";
+import { formatDate } from "../../utils/ConvertDate";
+
+export type FollowUpType = {
+  id: number;
+  followUpDate: string;
+  lead: {
+    id: number;
+    firstName: string;
+    lastName?: string;
+  };
+  assignedTo: {
+    firstName: string;
+    lastName?: string;
+  };
+  isCompleted: boolean;
+};
 
 const FollowUpsList = ({
   data,
@@ -12,7 +22,7 @@ const FollowUpsList = ({
   openEdit,
   openDelete,
 }: {
-  data: LeadType[];
+  data: FollowUpType[];
   loading: boolean;
   openEdit: (userId: number) => void;
   openDelete: (userId: number) => void;
@@ -32,68 +42,47 @@ const FollowUpsList = ({
         <table className="w-full table-auto border-collapse bg-white shadow-md rounded-lg overflow-hidden">
           <thead className="text-sm font-medium bg-purple-600 text-white">
             <tr>
-              <th className="px-4 py-2 text-left">Name</th>
-              <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2 text-left">Phone</th>
-              <th className="px-4 py-2 text-left">Priority</th>
-              <th className="px-4 py-2 text-left">Source</th>
+              <th className="px-4 py-2 text-left">Lead Name</th>
+              <th className="px-4 py-2 text-left">Assigned To</th>
+              <th className="px-4 py-2 text-left">Date</th>
               <th className="px-4 py-2 text-left">Status</th>
-              <th className="px-4 py-2 text-left">Created</th>
-              <th className="px-4 py-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody className="text-sm text-gray-700">
-            {data.map((lead, index) => (
+            {data.map((followUp, index) => (
               <tr
                 key={index}
                 className="hover:bg-gray-50 font-medium transition duration-300"
               >
                 <td className="px-4 py-2 border-b border-gray-300">
-                  <Link to={`/leads/${lead.id}`}>
-                    {lead.firstName +
-                      (lead.lastName ? ` ${lead.lastName}` : "")}
+                  <Link to={`/leads/${followUp.lead.id}`}>
+                    {followUp.lead.firstName +
+                      (followUp.lead.lastName
+                        ? ` ${followUp.lead.lastName}`
+                        : "")}
                   </Link>
                 </td>
                 <td className="px-4 py-2 border-b text-gray-500 border-gray-300">
-                  {lead.email}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-500 border-gray-300">
-                  {lead.phone}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-500 border-gray-300">
-                  {lead.priority[0] + lead.priority.substring(1).toLowerCase()}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-500 border-gray-300">
-                  {
-                    sourceOptions.find((option) => option.value === lead.source)
-                      ?.label
-                  }
-                </td>
-                <td className="border-b border-gray-300">
-                  <LeadStatusBadge text={lead.status} status={lead.status} />
-                </td>
-                <td className="px-4 py-2 border-b text-gray-500 border-gray-300">
-                  {formatDate(lead.createdAt)}
+                  {followUp.assignedTo.firstName +
+                    (followUp.assignedTo.lastName
+                      ? ` ${followUp.assignedTo.lastName}`
+                      : "")}
                 </td>
 
-                {/* Actions */}
-                <td className="px-4 py-2 border-b border-gray-300">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        openEdit(lead.id);
-                      }}
-                      className="px-3 text-lg text-pink-600 hover:text-pink-700"
-                    >
-                      <FiEdit />
-                    </button>
-                    <button
-                      className={`px-3 text-2xl text-pink-600 hover:text-pink-700`}
-                      onClick={() => openDelete(lead.id)}
-                    >
-                      <MdDeleteForever />
-                    </button>
-                  </div>
+                <td className="px-4 py-2 border-b text-gray-500 border-gray-300">
+                  {formatDate(followUp.followUpDate)}
+                </td>
+
+                <td className="border-b border-gray-300">
+                  <span
+                    className={`px-2 py-1 rounded-md text-xs font-semibold ${
+                      followUp.isCompleted
+                        ? "bg-green-200 text-green-800"
+                        : "bg-yellow-200 text-yellow-800"
+                    }`}
+                  >
+                    {followUp.isCompleted ? "Completed" : "Pending"}
+                  </span>
                 </td>
               </tr>
             ))}

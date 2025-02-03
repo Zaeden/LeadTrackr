@@ -36,20 +36,20 @@ const LeadProfile = () => {
     updatedAt: "",
   });
 
-  useEffect(() => {
-    const fetchLeadData = async () => {
-      if (leadId) {
-        try {
-          const response = await apiClient.getLead(parseInt(leadId, 10));
-          setLeadData(response.lead);
-          console.log(response);
-        } catch (error) {
-          console.error("Error fetching lead data:", error);
-        }
-      } else {
-        console.error("Lead ID is undefined");
+  const fetchLeadData = async () => {
+    if (leadId) {
+      try {
+        const response = await apiClient.getLead(parseInt(leadId, 10));
+        setLeadData(response.lead);
+      } catch (error) {
+        console.error("Error fetching lead data:", error);
       }
-    };
+    } else {
+      console.error("Lead ID is undefined");
+    }
+  };
+
+  useEffect(() => {
     fetchLeadData();
   }, [leadId]);
 
@@ -57,7 +57,7 @@ const LeadProfile = () => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
       {/* First Column: Lead Details */}
       <div className="w-full">
-        <LeadDetails lead={leadData} />
+        <LeadDetails lead={leadData} fetchLeadData={fetchLeadData} />
       </div>
 
       {/* Second Column: Lead Interactions */}

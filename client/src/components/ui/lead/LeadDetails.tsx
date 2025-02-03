@@ -20,9 +20,10 @@ import UploadProfilePhoto from "./UploadProfilePhoto";
 
 type LeadProps = {
   lead: LeadType;
+  fetchLeadData: () => void;
 };
 
-const LeadDetails: React.FC<LeadProps> = ({ lead }) => {
+const LeadDetails: React.FC<LeadProps> = ({ lead, fetchLeadData }) => {
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
 
   const [course, setCourse] = useState<{ name: string; level: string }>({
@@ -117,7 +118,9 @@ const LeadDetails: React.FC<LeadProps> = ({ lead }) => {
           leadId={lead.id}
           profilePic={lead.profilePic}
           onClose={() => setShowUploadModal(false)}
-          onSuccess={() => {}}
+          onSuccess={() => {
+            fetchLeadData();
+          }}
         />
       )}
 

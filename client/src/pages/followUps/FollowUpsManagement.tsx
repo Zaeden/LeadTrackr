@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import * as apiClient from "../../api-client";
-import { LeadType } from "../../types/LeadType";
 import AddLead from "../../components/forms/AddLead";
 import EditLead from "../../components/forms/EditLead";
 import DeleteLeadDailog from "../../components/ui/DeleteLeadDailog";
-import FollowUpsList from "./FollowUpsList";
+import FollowUpsList, { FollowUpType } from "./FollowUpsList";
 
 const FollowUpsManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedLeadId, setSelectedLeadId] = useState<number | null>(null);
-  const [data, setData] = useState<LeadType[]>([]);
+  const [data, setData] = useState<FollowUpType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleAddLead = () => {
@@ -24,7 +23,6 @@ const FollowUpsManagement = () => {
     try {
       const response = await apiClient.getAllFollowUps();
       if (response.success) {
-        console.log(response.followUps);
         setData(response.followUps);
       } else {
         console.error("Failed to fetch follow ups:", response.message);

@@ -28,7 +28,6 @@ const CourseManagement = () => {
       } else {
         console.error("Failed to fetch users:", response.message);
       }
-      console.log(response.courses);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {

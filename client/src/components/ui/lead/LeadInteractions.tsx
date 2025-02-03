@@ -15,7 +15,6 @@ const LeadInteractions = ({ leadId }: { leadId: string | undefined }) => {
     try {
       if (leadId) {
         const response = await apiClient.getInteractions(parseInt(leadId, 10));
-        console.log(response);
         setInteractions(response.interactions);
       }
     } catch (error) {

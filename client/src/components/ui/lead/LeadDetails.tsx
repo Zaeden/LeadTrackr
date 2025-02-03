@@ -17,6 +17,7 @@ import {
 import { TbMapPinCode } from "react-icons/tb";
 import { FiUpload } from "react-icons/fi";
 import UploadProfilePhoto from "./UploadProfilePhoto";
+import { formatDate } from "../../../utils/ConvertDate";
 
 type LeadProps = {
   lead: LeadType;
@@ -154,7 +155,7 @@ const LeadDetails: React.FC<LeadProps> = ({ lead, fetchLeadData }) => {
           <li className="flex items-center gap-2">
             <MdDateRange className="text-xl text-gray-500" />
             <span className="text-gray-500">Date of Birth:</span>
-            <span>{lead.dob}</span>
+            <span>{formatDate(lead.dob)}</span>
           </li>
           <li className="flex items-center gap-2">
             <MdOutlineLibraryBooks className="text-xl text-gray-500" />

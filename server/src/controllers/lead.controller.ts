@@ -93,6 +93,7 @@ class LeadController {
       const newLead = await prisma.lead.create({
         data: {
           ...payload,
+          dob: new Date(payload.dob),
           assignedTo: userId,
           createdBy: userId,
           status: "NEW",
@@ -138,6 +139,7 @@ class LeadController {
         },
         data: {
           ...payload,
+          dob: new Date(payload.dob),
           source: payload.source as LeadSource,
           status: payload.status as LeadStatus,
         },

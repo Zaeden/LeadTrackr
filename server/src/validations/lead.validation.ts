@@ -10,6 +10,12 @@ export const leadSchema = z.object({
   phone: z.string().min(10).max(10),
   gender: z.enum([Gender.MALE, Gender.FEMALE]),
   courseId: z.number().optional(),
+  dob: z
+    .string()
+    .refine(
+      (date) => !isNaN(new Date(date).getTime()),
+      "Date of birth must be a valid date string."
+    ),
   source: z.enum(leadSourceEnum),
   fatherName: z.string().optional(),
   fatherPhone: z.string().optional(),

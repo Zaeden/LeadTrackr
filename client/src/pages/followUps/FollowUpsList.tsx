@@ -19,13 +19,9 @@ export type FollowUpType = {
 const FollowUpsList = ({
   data,
   loading,
-  openEdit,
-  openDelete,
 }: {
   data: FollowUpType[];
   loading: boolean;
-  openEdit: (userId: number) => void;
-  openDelete: (userId: number) => void;
 }) => {
   return (
     <div className="rounded-md shadow-md">

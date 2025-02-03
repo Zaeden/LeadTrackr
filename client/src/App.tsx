@@ -8,7 +8,7 @@ import UserManagement from "./pages/user/UserManagement";
 import CourseManagement from "./pages/course/CourseManagement";
 import LeadManagement from "./pages/lead/LeadManagement";
 import LeadProfile from "./pages/lead/LeadProfile";
-import FollowUpsManagement from "./pages/followUps/followUpsManagement";
+import FollowUpsManagement from "./pages/followUps/FollowUpsManagement";
 
 const App = () => {
   const { isAuthenticated, role } = useAuth();

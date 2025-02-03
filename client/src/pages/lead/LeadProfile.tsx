@@ -61,12 +61,12 @@ const LeadProfile = () => {
       </div>
 
       {/* Second Column: Lead Interactions */}
-      <div className="w-full">
+      <div className="w-full max-h-[600px] overflow-y-auto rounded-lg">
         <LeadInteractions leadId={leadId} />
       </div>
 
       {/* Third Column: Follow-Ups */}
-      <div className="w-full">
+      <div className="w-full max-h-[600px] overflow-y-auto rounded-lg">
         <LeadFollowUps leadId={leadId} />
       </div>
     </div>

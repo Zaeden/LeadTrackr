@@ -32,7 +32,7 @@ const LeadInteractions = ({ leadId }: { leadId: string | undefined }) => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">Interactions</h2>
+        <h2 className="text-xl font-bold text-gray-700">Interactions</h2>
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center gap-1 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-md hover:bg-purple-700"

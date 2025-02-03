@@ -8,8 +8,10 @@ import { LuUserPen } from "react-icons/lu";
 import { RiChatFollowUpLine } from "react-icons/ri";
 import { MdOutlineSubject } from "react-icons/md";
 import Logout from "./Logout";
+import useAuth from "../../hooks/useAuth";
 
 const Sidebar = () => {
+  const { role } = useAuth();
   const location = useLocation();
   return (
     <nav className="border-r shadow-md w-64 bg-white flex flex-col">
@@ -43,33 +45,38 @@ const Sidebar = () => {
             <span className="text-sm font-semibold">Lead Management</span>
           </Link>
         </li>
-        <li>
-          <Link
-            to="/users"
-            className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
-              location.pathname === "/users"
-                ? "bg-purple-300 "
-                : " hover:bg-purple-300"
-            }`}
-          >
-            <LuUserPen className="text-2xl" />
-            <span className="text-sm font-semibold">User Management</span>
-          </Link>
-        </li>
 
-        <li>
-          <Link
-            to="/courses"
-            className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
-              location.pathname === "/courses"
-                ? "bg-purple-300 "
-                : "hover:bg-purple-300"
-            }`}
-          >
-            <MdOutlineSubject className="text-2xl" />
-            <span className="text-sm font-semibold">Course Management</span>
-          </Link>
-        </li>
+        {role === "ADMIN" && (
+          <>
+            <li>
+              <Link
+                to="/users"
+                className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
+                  location.pathname === "/users"
+                    ? "bg-purple-300 "
+                    : " hover:bg-purple-300"
+                }`}
+              >
+                <LuUserPen className="text-2xl" />
+                <span className="text-sm font-semibold">User Management</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/courses"
+                className={`flex items-center gap-2 py-2 px-3 rounded text-purple-900 ${
+                  location.pathname === "/courses"
+                    ? "bg-purple-300 "
+                    : "hover:bg-purple-300"
+                }`}
+              >
+                <MdOutlineSubject className="text-2xl" />
+                <span className="text-sm font-semibold">Course Management</span>
+              </Link>
+            </li>
+          </>
+        )}
+
         <li>
           <Link
             to="/follow-ups"

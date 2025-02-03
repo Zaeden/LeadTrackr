@@ -1,5 +1,6 @@
 import { AddCourseFormType } from "./components/forms/AddCourse";
 import { AddUserFormType } from "./components/forms/AddUser";
+import { FollowUpFormType } from "./components/ui/lead/AddFollowUpModal";
 import { LoginFormData } from "./pages/auth/Login";
 import { InteractionTypes } from "./types/InteractionTypes";
 import { LeadType } from "./types/LeadType";
@@ -389,6 +390,65 @@ export const getInteractions = async (leadId: number) => {
     {
       method: "GET",
       credentials: "include",
+    }
+  );
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+//Fetches all the follow ups.
+export const getAllFollowUps = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/follow-ups`, {
+    method: "GET",
+    credentials: "include",
+  });
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+//Fetches all the follow ups for a specific lead.
+export const getLeadFollowUps = async (leadId: number) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/leads/${leadId}/follow-ups`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+// Adds new lead follow up to the database.
+export const createLeadFollowUp = async (
+  leadId: number,
+  formData: FollowUpFormType
+) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/leads/${leadId}/follow-ups`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
     }
   );
 

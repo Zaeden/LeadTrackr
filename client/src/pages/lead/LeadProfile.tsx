@@ -4,6 +4,7 @@ import LeadInteractions from "../../components/ui/lead/LeadInteractions";
 import * as apiClient from "../../api-client";
 import { useEffect, useState } from "react";
 import { LeadType } from "../../types/LeadType";
+import LeadFollowUps from "../../components/ui/lead/LeadFollowUps";
 
 const LeadProfile = () => {
   const { leadId } = useParams<{ leadId: string | undefined }>();
@@ -53,15 +54,20 @@ const LeadProfile = () => {
   }, [leadId]);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 p-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
       {/* First Column: Lead Details */}
-      <div className="w-full lg:w-1/3">
+      <div className="w-full">
         <LeadDetails lead={leadData} />
       </div>
 
       {/* Second Column: Lead Interactions */}
-      <div className="w-full lg:w-2/3">
+      <div className="w-full">
         <LeadInteractions leadId={leadId} />
+      </div>
+
+      {/* Third Column: Follow-Ups */}
+      <div className="w-full">
+        <LeadFollowUps leadId={leadId} />
       </div>
     </div>
   );

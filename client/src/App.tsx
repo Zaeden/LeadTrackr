@@ -8,9 +8,10 @@ import UserManagement from "./pages/user/UserManagement";
 import CourseManagement from "./pages/course/CourseManagement";
 import LeadManagement from "./pages/lead/LeadManagement";
 import LeadProfile from "./pages/lead/LeadProfile";
+import FollowUpsManagement from "./pages/followUps/followUpsManagement";
 
 const App = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, role } = useAuth();
   return (
     <>
       <Routes>
@@ -27,14 +28,26 @@ const App = () => {
               }
             />
 
-            <Route
-              path="/users"
-              element={
-                <Layout>
-                  <UserManagement />
-                </Layout>
-              }
-            />
+            {role === "ADMIN" && (
+              <>
+                <Route
+                  path="/users"
+                  element={
+                    <Layout>
+                      <UserManagement />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/courses"
+                  element={
+                    <Layout>
+                      <CourseManagement />
+                    </Layout>
+                  }
+                />
+              </>
+            )}
             <Route
               path="/leads"
               element={
@@ -51,19 +64,12 @@ const App = () => {
                 </Layout>
               }
             />
-            <Route
-              path="/courses"
-              element={
-                <Layout>
-                  <CourseManagement />
-                </Layout>
-              }
-            />
+
             <Route
               path="/follow-ups"
               element={
                 <Layout>
-                  <Dashboard />
+                  <FollowUpsManagement />
                 </Layout>
               }
             />

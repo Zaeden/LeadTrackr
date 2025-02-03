@@ -102,7 +102,7 @@ class AuthController {
 
   static async validateToken(req: Request, res: Response): Promise<any> {
     try {
-      return res.status(201).json({ userId: req.user.id, role: req.user });
+      return res.status(201).json({ userId: req.user.id, role: req.user.role });
     } catch (error) {
       return res.status(500).json({ message: error });
     }

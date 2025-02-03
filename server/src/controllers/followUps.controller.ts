@@ -103,11 +103,21 @@ class FollowUpsController {
   // Fetch all the follow ups.
   static async getFollowUps(req: Request, res: Response): Promise<void> {
     const { completed, date } = req.query;
+    const { role, id: userId } = req.user;
     try {
-      const filter = {
-        isCompleted: completed ? completed === "true" : undefined,
-        followUpDate: date ? new Date(date as string) : undefined,
-      };
+      const filter: any = {};
+
+      if (completed) {
+        filter.isCompleted = completed === "true";
+      }
+      if (date) {
+        filter.followUpDate = new Date(date as string);
+      }
+
+      // Restrict to assigned user if not an admin
+      if (role !== "ADMIN") {
+        filter.assignedToId = userId;
+      }
       const followUps = await prisma.followUp.findMany({
         where: filter,
         include: {
@@ -115,13 +125,11 @@ class FollowUpsController {
           assignedTo: true,
         },
       });
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Follow up fetched successfully",
-          followUps,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Follow up fetched successfully",
+        followUps,
+      });
     } catch (error) {
       handleError(error, res);
     }

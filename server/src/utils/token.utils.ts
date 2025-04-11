@@ -5,6 +5,7 @@ const { JWT_SECRET_KEY } = process.env;
 export type Payload = {
   id: number;
   role: string;
+  name: string;
 };
 
 export const generateToken = (payload: Payload): string => {

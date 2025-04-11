@@ -77,7 +77,11 @@ class AuthController {
 
       // generate a token.
 
-      const token = generateToken({ id: user.id, role: user.role });
+      const token = generateToken({
+        id: user.id,
+        role: user.role,
+        name: user.firstName + " " + user.lastName,
+      });
 
       // send a cookie.
       res.cookie("auth_token", token, {
@@ -102,7 +106,13 @@ class AuthController {
 
   static async validateToken(req: Request, res: Response): Promise<any> {
     try {
-      return res.status(201).json({ userId: req.user.id, role: req.user.role });
+      return res
+        .status(201)
+        .json({
+          userId: req.user.id,
+          role: req.user.role,
+          name: req.user.name,
+        });
     } catch (error) {
       return res.status(500).json({ message: error });
     }

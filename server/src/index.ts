@@ -9,6 +9,7 @@ import leadRouter from "./routes/lead.route";
 import courseRouter from "./routes/course.route";
 import path from "path";
 import followUpRouter from "./routes/followUps.route";
+import dashboardRouter from "./routes/dashboard.route";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -36,6 +37,7 @@ app.use("/api/users", userRouter);
 app.use("/api/leads", leadRouter);
 app.use("/api/courses", courseRouter);
 app.use("/api/follow-ups", followUpRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 app.get("*", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../../client/dist/index.html"));

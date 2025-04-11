@@ -460,3 +460,19 @@ export const createLeadFollowUp = async (
 
   return responseBody;
 };
+
+// Fetch data for dashboard.
+export const getDashboardStats = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 type AuthContextType = {
   isAuthenticated: boolean;
   role: string;
+  username: string;
   setAuthenticated: (value: boolean) => void;
 };
 
@@ -17,6 +18,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [role, setRole] = useState<string>("");
 
+  const [username, setUsername] = useState<string>("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const response = await apiClient.validateToken();
         setIsAuthenticated(true);
         setRole(response.role);
+        setUsername(response.name);
       } catch (error) {
         console.error("Token validation failed:", error);
         setIsAuthenticated(false);
@@ -36,7 +40,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, role, setAuthenticated: setIsAuthenticated }}
+      value={{
+        isAuthenticated,
+        role,
+        username,
+        setAuthenticated: setIsAuthenticated,
+      }}
     >
       {children}
     </AuthContext.Provider>

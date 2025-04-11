@@ -75,3 +75,12 @@ export const interactionTypes = [
   { value: "EMAIL", label: "Email" },
   { value: "OTHER", label: "Other" },
 ];
+
+export const leadStatus = [
+  { value: "NEW", label: "New" },
+  { value: "CONTACTED", label: "Contacted" },
+  { value: "QUALIFIED", label: "Qualified" },
+  { value: "IN_PROGRESS", label: "In Progress" },
+  { value: "COMPLETED", label: "Completed" },
+  { value: "LOST", label: "Lost" },
+];

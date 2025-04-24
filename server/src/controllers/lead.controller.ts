@@ -4,7 +4,7 @@ import { handleError } from "../utils/handleError.utils";
 import { hashPassword } from "../utils/password.utils";
 import { ZodError } from "zod";
 import { leadSchema, updateLeadSchema } from "../validations/lead.validation";
-import { LeadSource, LeadStatus } from "@prisma/client";
+import { LeadSource, LeadStatus, Prisma } from "@prisma/client";
 import cloudinary from "cloudinary";
 
 class LeadController {
@@ -12,30 +12,66 @@ class LeadController {
   static async getAllLeads(req: Request, res: Response): Promise<void> {
     const { id: userId, role } = req.user;
 
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const search = (req.query.search as string)?.trim() || "";
+
     try {
-      let leads;
+      let whereClause: any = {};
 
-      if (role === "ADMIN") {
-        leads = await prisma.lead.findMany();
-      } else {
-        const user = await prisma.user.findUnique({
-          where: {
-            id: userId,
+      if (search) {
+        whereClause.OR = [
+          {
+            firstName: { contains: search, mode: "insensitive" },
           },
-          include: {
-            leads: true,
+          {
+            lastName: { contains: search, mode: "insensitive" },
           },
-        });
-        leads = user?.leads || [];
+          {
+            email: { contains: search, mode: "insensitive" },
+          },
+          {
+            phone: { contains: search, mode: "insensitive" },
+          },
+        ];
       }
 
-      if (leads.length === 0) {
-        res.status(404).json({ message: "No leads found." });
-        return;
+      if (req.query.status) {
+        whereClause.status = req.query.status;
       }
-      res
-        .status(200)
-        .json({ success: true, message: "Leads fetched successfully", leads });
+      if (req.query.source) {
+        whereClause.source = req.query.source;
+      }
+      if (req.query.priority) {
+        whereClause.priority = req.query.priority;
+      }
+
+      if (role !== "ADMIN") {
+        whereClause.assignedTo = userId;
+      }
+
+      const [leads, totalLeads] = await Promise.all([
+        prisma.lead.findMany({
+          where: whereClause,
+          skip,
+          take: limit,
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.lead.count({
+          where: whereClause,
+        }),
+      ]);
+
+      res.status(200).json({
+        success: true,
+        leads,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalLeads / limit),
+          totalLeads,
+        },
+      });
     } catch (error) {
       handleError(error, res);
     }

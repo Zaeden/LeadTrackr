@@ -11,34 +11,69 @@ import {
 class CourseController {
   // Get all the course details
   static async getAllCourses(req: Request, res: Response): Promise<any> {
-    const { page = 1, limit = 10, search = "" } = req.query;
+    const { page = 1, limit = 10, search = "", level, status } = req.query;
     const pageNumber = parseInt(page as string, 10);
     const pageSize = parseInt(limit as string, 10);
 
     try {
-      const whereClause = search
-        ? {
-            OR: [
-              {
-                name: {
-                  contains: search as string,
-                  mode: Prisma.QueryMode.insensitive,
-                },
-              },
-              { role: { equals: search as CourseLevel } },
-            ],
-          }
-        : {};
+      const whereClause: any = {
+        AND: [],
+      };
 
-      const totalCourses = await prisma.course.count();
+      // Search filter
+      if (search) {
+        whereClause.AND.push({
+          OR: [
+            {
+              name: {
+                contains: search as string,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+          ],
+        });
+      }
+
+      // Level filter
+      if (level) {
+        whereClause.AND.push({
+          level: level as CourseLevel,
+        });
+      }
+
+      // isActive filter
+      if (status) {
+        if (status === "ACTIVE") {
+          whereClause.AND.push({ isActive: true });
+        } else if (status === "INACTIVE") {
+          whereClause.AND.push({ isActive: false });
+        }
+      }
+
+      // If no filters, use an empty object
+      const finalWhereClause = whereClause.AND.length > 0 ? whereClause : {};
+
+      const totalCourses = await prisma.course.count({
+        where: finalWhereClause,
+      });
+
       const courses = await prisma.course.findMany({
-        where: whereClause,
+        where: finalWhereClause,
         skip: (pageNumber - 1) * pageSize,
         take: pageSize,
       });
+
       if (courses.length === 0) {
-        return res.status(404).json({ message: "No Courses found." });
+        return res.status(200).json({
+          success: true,
+          message: "No Courses found.",
+          courses: [],
+          totalCourses: 0,
+          totalPages: 0,
+          currentPage: pageNumber,
+        });
       }
+
       return res.status(200).json({
         success: true,
         message: "Courses fetched successfully",

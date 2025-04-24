@@ -8,58 +8,75 @@ import { Prisma, Role } from "@prisma/client";
 
 class UserController {
   // Get all the users details
-  static async getAllUsers(req: Request, res: Response): Promise<any> {
-    const { page = 1, limit = 10, search = "" } = req.query;
+  static async getAllUsers(req: Request, res: Response): Promise<void> {
+    const { page = 1, limit = 10, search = "", role, status } = req.query;
     const pageNumber = parseInt(page as string, 10);
     const pageSize = parseInt(limit as string, 10);
+    const skip = (pageNumber - 1) * pageSize;
+    const trimmedSearch = (search as string).trim();
 
     try {
-      const whereClause = search
-        ? {
-            OR: [
-              {
-                firstName: {
-                  contains: search as string,
-                  mode: Prisma.QueryMode.insensitive,
-                },
-              },
-              {
-                email: {
-                  contains: search as string,
-                  mode: Prisma.QueryMode.insensitive,
-                },
-              },
-              {
-                phone: {
-                  contains: search as string,
-                  mode: Prisma.QueryMode.insensitive,
-                },
-              },
+      const whereClause: any = {};
 
-              { role: { equals: search as Role } },
-            ],
-          }
-        : {};
-
-      const totalUsers = await prisma.user.count();
-      const users = await prisma.user.findMany({
-        where: whereClause,
-        skip: (pageNumber - 1) * pageSize,
-        take: pageSize,
-      });
-      if (users.length === 0) {
-        return res.status(404).json({ message: "No users found." });
+      if (trimmedSearch) {
+        whereClause.OR = [
+          {
+            firstName: {
+              contains: trimmedSearch,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            lastName: {
+              contains: trimmedSearch,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            email: {
+              contains: trimmedSearch,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            phone: {
+              contains: trimmedSearch,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+        ];
       }
-      return res.status(200).json({
+
+      if (role) {
+        whereClause.role = role;
+      }
+
+      if (status) {
+        if (status === "ACTIVE") whereClause.isActive = true;
+        else if (status === "INACTIVE") whereClause.isActive = false;
+      }
+
+      const [users, totalUsers] = await Promise.all([
+        prisma.user.findMany({
+          where: whereClause,
+          skip,
+          take: pageSize,
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.user.count({ where: whereClause }),
+      ]);
+
+      res.status(200).json({
         success: true,
-        message: "Users fetched successfully",
         users,
-        totalUsers,
-        totalPages: Math.ceil(totalUsers / pageSize),
-        currentPage: pageNumber,
+        pagination: {
+          currentPage: pageNumber,
+          totalPages: Math.ceil(totalUsers / pageSize),
+          totalUsers,
+        },
       });
     } catch (error) {
-      return handleError(error, res);
+      handleError(error, res);
     }
   }
 

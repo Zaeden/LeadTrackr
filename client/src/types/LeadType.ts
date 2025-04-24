@@ -42,3 +42,12 @@ export type LeadType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export interface GetAllLeadsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: string;
+  source?: string;
+  priority?: string;
+}

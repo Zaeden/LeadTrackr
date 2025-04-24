@@ -2,8 +2,10 @@ import { AddCourseFormType } from "./components/forms/AddCourse";
 import { AddUserFormType } from "./components/forms/AddUser";
 import { FollowUpFormType } from "./components/ui/lead/AddFollowUpModal";
 import { LoginFormData } from "./pages/auth/Login";
+import { CourseQueryParams } from "./types/CourseType";
 import { InteractionTypes } from "./types/InteractionTypes";
-import { LeadType } from "./types/LeadType";
+import { GetAllLeadsParams, LeadType } from "./types/LeadType";
+import { GetAllUsersParams } from "./types/UserType";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
@@ -56,16 +58,27 @@ export const logoutUser = async () => {
 };
 
 //Fetches all user data.
-export const getAllUsers = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/users/`, {
-    method: "GET",
-    credentials: "include",
-  });
+export const getAllUsers = async (params: GetAllUsersParams = {}) => {
+  const queryParams = new URLSearchParams();
+
+  if (params.search) queryParams.append("search", params.search);
+  if (params.page) queryParams.append("page", params.page.toString());
+  if (params.limit) queryParams.append("limit", params.limit.toString());
+  if (params.status) queryParams.append("status", params.status);
+  if (params.role) queryParams.append("role", params.role);
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/users?${queryParams.toString()}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
 
   const responseBody = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseBody.message);
+    throw new Error(responseBody.message || "Failed to fetch users.");
   }
 
   return responseBody;
@@ -150,11 +163,22 @@ export const deleteUser = async (userId: number | null) => {
 };
 
 //Fetches all courses data.
-export const getAllCourses = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/courses/`, {
-    method: "GET",
-    credentials: "include",
-  });
+export const getAllCourses = async (params: CourseQueryParams) => {
+  const query = new URLSearchParams();
+
+  if (params.search) query.append("search", params.search);
+  if (params.page) query.append("page", params.page.toString());
+  if (params.limit) query.append("limit", params.limit.toString());
+  if (params.level) query.append("level", params.level);
+  if (params.status) query.append("status", params.status);
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/courses?${query.toString()}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
 
   const responseBody = await response.json();
 
@@ -263,11 +287,31 @@ export const deleteCourse = async (courseId: number | null) => {
 };
 
 //Fetches all leads data.
-export const getAllLeads = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/leads/`, {
-    method: "GET",
-    credentials: "include",
-  });
+export const getAllLeads = async ({
+  page = 1,
+  limit = 10,
+  search = "",
+  status,
+  source,
+  priority,
+}: GetAllLeadsParams = {}) => {
+  const queryParams = new URLSearchParams();
+
+  queryParams.append("page", page.toString());
+  queryParams.append("limit", limit.toString());
+  queryParams.append("search", search);
+
+  if (status) queryParams.append("status", status);
+  if (source) queryParams.append("source", source);
+  if (priority) queryParams.append("priority", priority);
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/leads?${queryParams.toString()}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
 
   const responseBody = await response.json();
 

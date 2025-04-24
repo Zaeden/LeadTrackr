@@ -84,3 +84,13 @@ export const leadStatus = [
   { value: "COMPLETED", label: "Completed" },
   { value: "LOST", label: "Lost" },
 ];
+
+export const roleOptions = [
+  { value: "ADMIN", label: "Admin" },
+  { value: "EMPLOYEE", label: "Employee" },
+];
+
+export const statusOptions = [
+  { value: "ACTIVE", label: "Active" },
+  { value: "INACTIVE", label: "Inactive" },
+];

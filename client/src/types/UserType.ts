@@ -8,3 +8,11 @@ export type UserType = {
   isActive: boolean;
   createdAt: string;
 };
+
+export type GetAllUsersParams = {
+  search?: string;
+  page?: number;
+  limit?: number;
+  status?: string;
+  role?: string;
+};

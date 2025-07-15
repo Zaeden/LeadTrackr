@@ -13,7 +13,7 @@ export type LoginFormData = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setAuthenticated } = useAuth();
+  const { setAuthenticated, refreshAuth } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -29,8 +29,8 @@ const Login = () => {
     try {
       const response = await apiClient.login(data);
       Toast(response.message, "success");
-      setAuthenticated(true);
       reset();
+      await refreshAuth();
       navigate("/dashboard");
     } catch (error) {
       if (error instanceof Error) {

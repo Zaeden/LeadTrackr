@@ -3,7 +3,11 @@ import prisma from "../db/db.config";
 import { handleError } from "../utils/handleError.utils";
 import { hashPassword } from "../utils/password.utils";
 import { ZodError } from "zod";
-import { leadSchema, updateLeadSchema } from "../validations/lead.validation";
+import {
+  leadSchema,
+  partialUpdateLeadSchema,
+  updateLeadSchema,
+} from "../validations/lead.validation";
 import { LeadSource, LeadStatus, Prisma } from "@prisma/client";
 import cloudinary from "cloudinary";
 
@@ -84,6 +88,29 @@ class LeadController {
       const lead = await prisma.lead.findUnique({
         where: {
           id: leadId,
+        },
+        include: {
+          course: {
+            select: {
+              id: true,
+              name: true,
+              level: true,
+            },
+          },
+          assignedUser: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+          createdByUser: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
         },
       });
       if (!lead) {
@@ -194,6 +221,77 @@ class LeadController {
       } else {
         handleError(error, res);
       }
+    }
+  }
+
+  // Update status and assigned fields
+  static async updateLeadStatus(req: Request, res: Response): Promise<void> {
+    const leadId: number = parseInt(req.params.id, 10);
+    const { status } = req.body;
+
+    try {
+      const existingLead = await prisma.lead.findUnique({
+        where: { id: leadId },
+      });
+
+      if (!existingLead) {
+        res.status(404).json({ success: false, message: "Lead not found." });
+        return;
+      }
+
+      const updatedLead = await prisma.lead.update({
+        where: {
+          id: leadId,
+        },
+        data: {
+          status: status as LeadStatus,
+        },
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Lead status updated successfully",
+        lead: updatedLead,
+      });
+    } catch (error) {
+      handleError(error, res);
+    }
+  }
+
+  // Update assignedTo field
+  static async updateLeadAssignedTo(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const leadId: number = parseInt(req.params.id, 10);
+    const { assignedTo } = req.body;
+
+    try {
+      const existingLead = await prisma.lead.findUnique({
+        where: { id: leadId },
+      });
+
+      if (!existingLead) {
+        res.status(404).json({ success: false, message: "Lead not found." });
+        return;
+      }
+
+      const updatedLead = await prisma.lead.update({
+        where: {
+          id: leadId,
+        },
+        data: {
+          assignedTo,
+        },
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Lead assigned successfully",
+        lead: updatedLead,
+      });
+    } catch (error) {
+      handleError(error, res);
     }
   }
 

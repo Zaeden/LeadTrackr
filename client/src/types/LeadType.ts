@@ -1,3 +1,5 @@
+import { leadStatus } from "../data/dropDownData";
+
 export type LeadType = {
   id: number;
   firstName: string;
@@ -8,7 +10,22 @@ export type LeadType = {
   gender: "MALE" | "FEMALE";
   dob: string;
   courseId: number | null;
+  course: {
+    id: number;
+    name: string;
+    level: "DIPLOMA" | "BACHELORS" | "MASTERS" | "DOCTORATE";
+  };
   assignedTo: number;
+  assignedUser: {
+    id: number;
+    firstName: string;
+    lastName: string;
+  };
+  createdByUser: {
+    id: number;
+    firstName: string;
+    lastName: string;
+  };
   createdBy: number;
   status:
     | "NEW"
@@ -51,3 +68,5 @@ export interface GetAllLeadsParams {
   source?: string;
   priority?: string;
 }
+
+export type LeadStatusType = (typeof leadStatus)[number]["value"];

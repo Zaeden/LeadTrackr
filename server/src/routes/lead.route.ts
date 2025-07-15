@@ -17,6 +17,20 @@ leadRouter.post("/", authenticateToken, LeadController.createLead);
 
 leadRouter.put("/:id", authenticateToken, LeadController.updateLead);
 
+// Update lead status
+leadRouter.patch(
+  "/:id/status",
+  authenticateToken,
+  LeadController.updateLeadStatus
+);
+
+// Update lead assignedTo field
+leadRouter.patch(
+  "/:id/assigned",
+  authenticateToken,
+  LeadController.updateLeadAssignedTo
+);
+
 leadRouter.patch(
   "/:id/deactivate",
   authenticateToken,

@@ -24,7 +24,7 @@ const Dashboard = () => {
     { month: number; year: number; count: number }[]
   >([]);
   const [userConversions, setUserConversions] = useState<
-    { assignedTo: number; _count: { id: number } }[]
+    { assignedTo: string; count: number }[]
   >([]);
 
   useEffect(() => {
@@ -150,7 +150,7 @@ const Dashboard = () => {
               datasets: [
                 {
                   label: "Converted Leads",
-                  data: userConversions.map((d) => d._count.id),
+                  data: userConversions.map((d) => d.count),
                   backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
                 },
               ],

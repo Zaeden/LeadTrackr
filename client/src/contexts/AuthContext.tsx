@@ -8,6 +8,7 @@ type AuthContextType = {
   role: string;
   username: string;
   setAuthenticated: (value: boolean) => void;
+  refreshAuth: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -22,19 +23,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const navigate = useNavigate();
 
+  const validateToken = async () => {
+    try {
+      const response = await apiClient.validateToken();
+      setIsAuthenticated(true);
+      setRole(response.role);
+      setUsername(response.name);
+    } catch (error) {
+      console.error("Token validation failed:", error);
+      setIsAuthenticated(false);
+      navigate("/sign-in");
+    }
+  };
+
   useEffect(() => {
-    const validateToken = async () => {
-      try {
-        const response = await apiClient.validateToken();
-        setIsAuthenticated(true);
-        setRole(response.role);
-        setUsername(response.name);
-      } catch (error) {
-        console.error("Token validation failed:", error);
-        setIsAuthenticated(false);
-        navigate("/sign-in");
-      }
-    };
     validateToken();
   }, []);
 
@@ -45,6 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         role,
         username,
         setAuthenticated: setIsAuthenticated,
+        refreshAuth: validateToken,
       }}
     >
       {children}

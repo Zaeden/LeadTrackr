@@ -83,7 +83,7 @@ export const leadStatus = [
   { value: "IN_PROGRESS", label: "In Progress" },
   { value: "COMPLETED", label: "Completed" },
   { value: "LOST", label: "Lost" },
-];
+] as const;
 
 export const roleOptions = [
   { value: "ADMIN", label: "Admin" },

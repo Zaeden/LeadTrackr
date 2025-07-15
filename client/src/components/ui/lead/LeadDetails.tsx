@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { LeadType } from "../../../types/LeadType";
+import { LeadStatusType, LeadType } from "../../../types/LeadType";
 import LeadStatusBadge from "../LeadStatusBadge";
-import { indianStates, sourceOptions } from "../../../data/dropDownData";
+import {
+  indianStates,
+  sourceOptions,
+  leadStatus,
+} from "../../../data/dropDownData";
 import * as apiClient from "../../../api-client";
 import {
   MdOutlinePerson,
@@ -13,11 +17,13 @@ import {
   MdOutlineOutlinedFlag,
   MdOutlineLocationOn,
   MdLocationCity,
+  MdModeEditOutline,
 } from "react-icons/md";
 import { TbMapPinCode } from "react-icons/tb";
 import { FiUpload } from "react-icons/fi";
 import UploadProfilePhoto from "./UploadProfilePhoto";
 import { formatDate } from "../../../utils/ConvertDate";
+import { isLeadStatusType } from "../../../utils/guards.utils";
 
 type LeadProps = {
   lead: LeadType;
@@ -27,63 +33,46 @@ type LeadProps = {
 const LeadDetails: React.FC<LeadProps> = ({ lead, fetchLeadData }) => {
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
 
-  const [course, setCourse] = useState<{ name: string; level: string }>({
-    name: "",
-    level: "",
-  });
+  const [status, setStatus] = useState<
+    "NEW" | "CONTACTED" | "QUALIFIED" | "IN_PROGRESS" | "COMPLETED" | "LOST"
+  >(lead.status);
 
-  const [leadCreatorName, setLeadCreatorName] = useState<string>("");
-  const [leadAssignedToName, setLeadAssignedToName] = useState<string>("");
+  const [assignedTo, setAssignedTo] = useState(lead.assignedTo);
+  const [userList, setUserList] = useState<>([]);
 
-  // For fetching course name using courseId.
+  const [editingStatus, setEditingStatus] = useState(false);
+  const [editingAssignedTo, setEditingAssignedTo] = useState(false);
+
+  const handleStatusUpdate = async (newStatus: LeadStatusType) => {
+    setStatus(newStatus);
+    setEditingStatus(false);
+    try {
+      await apiClient.updateLeadStatus(lead.id, newStatus);
+      fetchLeadData();
+    } catch (err) {
+      console.error("Error updating status", err);
+    }
+  };
+
+  // const handleAssignedToUpdate = async (newAssignedTo: number) => {
+  //   setAssignedTo(newAssignedTo);
+  //   setEditingAssignedTo(false);
+
+  //   try {
+  //     await apiClient.updateLeadStatusOrAssignedUser(lead.id, updatePayload);
+  //     fetchLeadData();
+  //   } catch (err) {
+  //     console.error("Error updating assigned to", err);
+  //   }
+  // };
+
   useEffect(() => {
-    const fetchCourse = async () => {
-      const { courseId } = lead;
-      if (courseId) {
-        try {
-          const response = await apiClient.getCourse(courseId);
-          setCourse(response.course);
-        } catch (error) {
-          console.error("Error fetching lead data:", error);
-        }
-      }
-    };
-    fetchCourse();
-  }, [lead]);
+    if (isLeadStatusType(lead.status)) {
+      setStatus(lead.status);
+    }
+  }, [lead.status]);
 
-  // For fetching lead creater details using creatorId.
-  useEffect(() => {
-    const fetchLeadCreator = async () => {
-      const { createdBy } = lead;
-      if (createdBy) {
-        try {
-          const response = await apiClient.getUser(createdBy);
-          setLeadCreatorName(response.user.firstName + response.user.lastName);
-        } catch (error) {
-          console.error("Error fetching lead data:", error);
-        }
-      }
-    };
-    fetchLeadCreator();
-  }, [lead]);
-
-  // For fetching lead assigned to details using assignerId.
-  useEffect(() => {
-    const fetchLeadAssignedTo = async () => {
-      const { assignedTo } = lead;
-      if (assignedTo) {
-        try {
-          const response = await apiClient.getUser(assignedTo);
-          setLeadAssignedToName(
-            response.user.firstName + response.user.lastName
-          );
-        } catch (error) {
-          console.error("Error fetching lead data:", error);
-        }
-      }
-    };
-    fetchLeadAssignedTo();
-  }, [lead]);
+  useEffect(() => {});
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -110,7 +99,41 @@ const LeadDetails: React.FC<LeadProps> = ({ lead, fetchLeadData }) => {
         </button>
 
         {/* Lead Status */}
-        <LeadStatusBadge text={lead.status} status={lead.status} />
+        {/* <LeadStatusBadge text={lead.status} status={lead.status} /> */}
+
+        <div className="flex items-center gap-2 mt-2">
+          <span className="text-gray-500 font-semibold">Status:</span>
+          {editingStatus ? (
+            <select
+              value={status}
+              onChange={(e) => {
+                const newStatus = e.target.value as LeadStatusType;
+                if (isLeadStatusType(newStatus)) {
+                  setStatus(newStatus);
+                  handleStatusUpdate(newStatus);
+                }
+              }}
+              onBlur={() => setEditingStatus(false)}
+              className="border px-2 py-1 rounded text-sm"
+              autoFocus
+            >
+              {leadStatus.map((status) => (
+                <option key={status.value} value={status.value}>
+                  {status.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <>
+              <LeadStatusBadge text={status} status={status} />
+              <button onClick={() => setEditingStatus(true)}>
+                <span className="text-purple-600 hover:text-purple-800 text-sm">
+                  <MdModeEditOutline className="text-xl" />
+                </span>
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Modal for Uploading Photo */}
@@ -160,17 +183,48 @@ const LeadDetails: React.FC<LeadProps> = ({ lead, fetchLeadData }) => {
           <li className="flex items-center gap-2">
             <MdOutlineLibraryBooks className="text-xl text-gray-500" />
             <span className="text-gray-500">Course:</span>
-            <span>{course.name ?? "N/A"}</span>
+            <span>{lead.course?.name ?? "N/A"}</span>
           </li>
           <li className="flex items-center gap-2">
             <MdOutlinePerson className="text-xl text-gray-500" />
             <span className="text-gray-500">Assigned To:</span>
-            <span>{leadAssignedToName}</span>
+
+            {editingAssignedTo ? (
+              <select
+                value={assignedTo}
+                onChange={(e) =>
+                  handleAssignedToUpdate(parseInt(e.target.value, 10))
+                }
+                onBlur={() => setEditingAssignedTo(false)}
+                className="border px-2 py-1 rounded text-sm"
+                autoFocus
+              >
+                {/* Replace with actual user list dynamically */}
+                <option value={1}>User 1</option>
+                <option value={2}>User 2</option>
+                <option value={3}>User 3</option>
+              </select>
+            ) : (
+              <>
+                <span>
+                  {lead.assignedUser.firstName +
+                    " " +
+                    lead.assignedUser.lastName}
+                </span>
+                <button onClick={() => setEditingAssignedTo(true)}>
+                  <span className="text-purple-600 hover:text-purple-800 text-sm">
+                    <MdModeEditOutline className="text-xl" />
+                  </span>
+                </button>
+              </>
+            )}
           </li>
           <li className="flex items-center gap-2">
             <MdOutlinePerson className="text-xl text-gray-500" />
             <span className="text-gray-500">Created By:</span>
-            <span>{leadCreatorName}</span>
+            <span>
+              {lead.createdByUser.firstName + " " + lead.createdByUser.lastName}
+            </span>
           </li>
           <li className="flex items-center gap-2">
             <MdOutlineOutlinedFlag className="text-xl text-gray-500" />

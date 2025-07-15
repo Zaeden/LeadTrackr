@@ -190,7 +190,7 @@ const LeadManagement = () => {
         </div>
       ) : data.length === 0 ? (
         <div className="text-center text-gray-500 mt-10">
-          No courses found matching your filters.
+          No leads found matching your filters.
         </div>
       ) : (
         <LeadList

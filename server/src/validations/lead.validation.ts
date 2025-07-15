@@ -32,3 +32,8 @@ const leadStatusEnum = Object.values(LeadStatus) as [string, ...string[]];
 export const updateLeadSchema = leadSchema.extend({
   status: z.enum(leadStatusEnum),
 });
+
+export const partialUpdateLeadSchema = z.object({
+  status: z.nativeEnum(LeadStatus).optional(),
+  assignedTo: z.number().optional(),
+});

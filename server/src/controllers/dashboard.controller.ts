@@ -51,6 +51,13 @@ class DashboardController {
         count: entry._count._all, // Convert count to number if needed
       }));
 
+      console.log({
+        success: true,
+        leadStatusCounts,
+        leadsByMonth: formattedLeadsByMonth,
+        userConversions: formattedUserConversions,
+      });
+
       res.status(200).json({
         success: true,
         leadStatusCounts,

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { setAuthenticated } = useAuth();
+  const { setAuthenticated, refreshAuth } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -16,6 +16,7 @@ const Logout = () => {
       const response = await apiClient.logoutUser();
       setAuthenticated(false);
       Toast(response.message, "success");
+      await refreshAuth();
       navigate("/sign-in");
     } catch (error) {
       if (error instanceof Error) {

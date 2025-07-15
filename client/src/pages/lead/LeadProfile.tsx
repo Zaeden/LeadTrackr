@@ -19,7 +19,22 @@ const LeadProfile = () => {
     dob: "",
     courseId: null,
     assignedTo: 0,
+    assignedUser: {
+      id: 0,
+      firstName: "",
+      lastName: "",
+    },
     createdBy: 0,
+    course: {
+      id: 0,
+      name: "",
+      level: "BACHELORS",
+    },
+    createdByUser: {
+      id: 0,
+      firstName: "",
+      lastName: "",
+    },
     status: "NEW",
     isActive: true,
     source: "OTHER",
@@ -41,6 +56,7 @@ const LeadProfile = () => {
       try {
         const response = await apiClient.getLead(parseInt(leadId, 10));
         setLeadData(response.lead);
+        console.log(response.lead);
       } catch (error) {
         console.error("Error fetching lead data:", error);
       }

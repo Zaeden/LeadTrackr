@@ -4,7 +4,7 @@ import { FollowUpFormType } from "./components/ui/lead/AddFollowUpModal";
 import { LoginFormData } from "./pages/auth/Login";
 import { CourseQueryParams } from "./types/CourseType";
 import { InteractionTypes } from "./types/InteractionTypes";
-import { GetAllLeadsParams, LeadType } from "./types/LeadType";
+import { GetAllLeadsParams, LeadStatusType, LeadType } from "./types/LeadType";
 import { GetAllUsersParams } from "./types/UserType";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
@@ -373,6 +373,52 @@ export const updateLead = async (leadId: number | null, formData: LeadType) => {
 
   if (!response.ok) {
     throw new Error(responseBody.message);
+  }
+
+  return responseBody;
+};
+
+// Updates existing lead status in the database.
+export const updateLeadStatus = async (
+  leadId: number,
+  status: LeadStatusType
+) => {
+  const response = await fetch(`${API_BASE_URL}/api/leads/${leadId}/status`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message || "Failed to update lead");
+  }
+
+  return responseBody;
+};
+
+// Updates existing lead assignedTo in the database.
+export const updateLeadAssignedTo = async (
+  leadId: number,
+  assignedTo: number
+) => {
+  const response = await fetch(`${API_BASE_URL}/api/leads/${leadId}/assigned`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ assignedTo }),
+  });
+
+  const responseBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseBody.message || "Failed to update lead");
   }
 
   return responseBody;

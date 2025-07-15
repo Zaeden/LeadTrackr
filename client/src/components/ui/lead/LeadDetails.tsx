@@ -37,8 +37,7 @@ const LeadDetails: React.FC<LeadProps> = ({ lead, fetchLeadData }) => {
     "NEW" | "CONTACTED" | "QUALIFIED" | "IN_PROGRESS" | "COMPLETED" | "LOST"
   >(lead.status);
 
-  const [assignedTo, setAssignedTo] = useState(lead.assignedTo);
-  const [userList, setUserList] = useState<>([]);
+  // const [assignedTo, setAssignedTo] = useState(lead.assignedTo);
 
   const [editingStatus, setEditingStatus] = useState(false);
   const [editingAssignedTo, setEditingAssignedTo] = useState(false);
@@ -190,21 +189,22 @@ const LeadDetails: React.FC<LeadProps> = ({ lead, fetchLeadData }) => {
             <span className="text-gray-500">Assigned To:</span>
 
             {editingAssignedTo ? (
-              <select
-                value={assignedTo}
-                onChange={(e) =>
-                  handleAssignedToUpdate(parseInt(e.target.value, 10))
-                }
-                onBlur={() => setEditingAssignedTo(false)}
-                className="border px-2 py-1 rounded text-sm"
-                autoFocus
-              >
-                {/* Replace with actual user list dynamically */}
-                <option value={1}>User 1</option>
-                <option value={2}>User 2</option>
-                <option value={3}>User 3</option>
-              </select>
+              <></>
             ) : (
+              // <select
+              //   value={assignedTo}
+              //   onChange={(e) =>
+              //     handleAssignedToUpdate(parseInt(e.target.value, 10))
+              //   }
+              //   onBlur={() => setEditingAssignedTo(false)}
+              //   className="border px-2 py-1 rounded text-sm"
+              //   autoFocus
+              // >
+              //   {/* Replace with actual user list dynamically */}
+              //   <option value={1}>User 1</option>
+              //   <option value={2}>User 2</option>
+              //   <option value={3}>User 3</option>
+              // </select>
               <>
                 <span>
                   {lead.assignedUser.firstName +

@@ -13,7 +13,7 @@ export type LoginFormData = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setAuthenticated, refreshAuth } = useAuth();
+  const { refreshAuth } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
